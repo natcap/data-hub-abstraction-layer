@@ -1,0 +1,78 @@
+name: Build docker container
+
+on:
+    workflow_dispatch:
+    push:
+        paths:
+            - src/**
+            - .github/workflows/build.yml
+
+concurrency:
+    # make sure only one run of this workflow for a given PR or a given branch
+    # can happen at one time. previous queued or started runs will be cancelled.
+    # github.workflow is the workflow name
+    # github.ref is the ref that triggered the workflow run
+    # on push, this is refs/heads/<branch name>
+    # on pull request, this is refs/pull/<pull request number>/merge
+    group: ${{ github.workflow }}-${{ github.ref }}
+    cancel-in-progress: true
+
+defaults:
+    run:
+        shell: bash -l {0}
+
+env:
+    CONTAINER_NAME: dhal-api
+    SERVICE_ACCOUNT_EMAIL: github-titiler-container-build@sdss-natcap-gef-ckan.iam.gserviceaccount.com
+    REGISTRY_URL: us-west1-docker.pkg.dev/sdss-natcap-gef-ckan/dhal-api/dhal-api
+    REGION: us-west1
+
+jobs:
+    build:
+        name: Build DHAL API
+        runs-on: ubuntu-latest
+        permissions:
+            packages: write
+            id-token: write  # This is required for requesting the JWT for identity federation
+            contents: read
+
+        steps:
+            - uses: actions/checkout@v7
+
+            - uses: google-github-actions/auth@v3
+              id: googleauth
+              with:
+                  project_id: sdss-natcap-gef-ckan
+                  workload_identity_provider: projects/897938321824/locations/global/workloadIdentityPools/github/providers/my-repo
+                  service_account: ${{ env.SERVICE_ACCOUNT_EMAIL }}
+                  token_format: 'access_token'
+
+            - name: Log in to Google Artifact Registry
+              uses: docker/login-action@v4
+              with:
+                  registry: ${{ env.REGION }}.pkg.dev
+                  username: 'oauth2accesstoken'
+                  password: ${{ steps.googleauth.outputs.access_token }}
+
+            - name: Build docker
+              run: |
+                  # Replace / (invalid tag character) with .
+                  SANITIZED_REF="$(echo ${{github.ref_name}} | sed 's|/|.|g')"
+                  docker build \
+                        -t ${{ env.REGISTRY_URL }}:${{ github.sha }} \
+                        -t ${{ env.REGISTRY_URL }}:latest \
+                        .
+
+            - name: Push docker
+              if: github.event_name != 'pull_request'
+              run: |-
+                  docker image push ${{ env.REGISTRY_URL }}:${{ github.sha }}
+                  docker image push ${{ env.REGISTRY_URL }}:latest
+
+            - name: Deploy to Cloud Run
+              if : github.event_name == 'push' && github.ref == 'refs/heads/main'
+              uses: google-github-actions/deploy-cloudrun@v3
+              with:
+                  service: dhal-api
+                  image: ${{ env.REGISTRY_URL }}:${{ github.sha }}
+                  region: ${{ env.REGION }}

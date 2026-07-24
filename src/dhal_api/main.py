@@ -16,22 +16,24 @@ from dhal_api.models import (
 
 
 LOGGER = logging.getLogger(__name__)
+ROOT_PATH = os.environ.get("API_ROOT_PATH", "")
 
 app = FastAPI(
     title="Natural Capital Alliance Data Hub Abstraction Layer",
     description="API for querying the NatCap Data Hub from InVEST.",
-    version="0.1.0"
+    version="0.1.0",
+    root_path=ROOT_PATH
 )
 
 # Production:
-#CKAN_API_URL = 'https://data.naturalcapitalalliance.stanford.edu'
-#PLACE_VOCAB_ID = '08e541f5-0f71-4931-bfc8-30bf66801146'
-#COLLECTION_VOCAB_ID = '94023b63-78d9-46fb-b688-154d0cd2a8ef'
+CKAN_API_URL = 'https://data.naturalcapitalalliance.stanford.edu'
+PLACE_VOCAB_ID = '08e541f5-0f71-4931-bfc8-30bf66801146'
+COLLECTION_VOCAB_ID = '94023b63-78d9-46fb-b688-154d0cd2a8ef'
 
 # Staging:
-CKAN_API_URL = 'https://data-staging.naturalcapitalproject.org'
-PLACE_VOCAB_ID = '10db4d07-a510-4838-ad1b-2adcf4a212f4'
-COLLECTION_VOCAB_ID = '758da202-4bab-46b0-ba53-569ef1a465c8'
+#CKAN_API_URL = 'https://data-staging.naturalcapitalproject.org'
+#PLACE_VOCAB_ID = '10db4d07-a510-4838-ad1b-2adcf4a212f4'
+#COLLECTION_VOCAB_ID = '758da202-4bab-46b0-ba53-569ef1a465c8'
 
 # Dev:
 #CKAN_API_URL = 'https://localhost:8443'
@@ -182,4 +184,13 @@ def search_dataset(filter_query: Annotated[SearchParams, Query()]) -> SearchResp
     return SearchResponse(
         count=len(datasets),
         datasets=datasets
+    )
+
+
+if __name__ == '__main__':
+    import uvicorn
+    uvicorn.run(
+        app,
+        host=os.environ.get('HOST', '127.0.0.1'),
+        port=int(os.environ.get('PORT', 8000)),
     )
