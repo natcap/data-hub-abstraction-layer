@@ -56,6 +56,14 @@ class DatasetSearchResult(BaseModel):
     """The dataset description."""
     extent: list[float] | None = None
     """A 4-element iterable of [minx, miny, maxx, maxy] in EPSG:4326"""
+    pixel_size: list[float] | None = None
+    """A 2-element iterable representing the width and height of a pixel in crs_units.
+    This value will always be None for non-raster datasets.
+    """
+    crs_wkt: str | None = None
+    """The Well-Known Text string representation of the dataset's CRS."""
+    crs_units: str | None = None
+    """Units of measure for coordinates in the CRS."""
     tags: list[str]
     """All non-vocabulary tags associated with the dataset."""
     places: list[str]
