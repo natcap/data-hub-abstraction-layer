@@ -54,6 +54,10 @@
                 {
                     "key": "spatial",
                     "value": "{\"type\": \"Polygon\", \"coordinates\": [[[36.744343840599385, -0.5359785856603112], [36.744343840599385, -0.60712559476077], [36.97163097658486, -0.60712559476077], [36.97163097658486, -0.5359785856603112], [36.744343840599385, -0.5359785856603112]]]}"
+                },
+                {
+                    "key": "projection_information",
+                    "value": "{\"wkt\": \"GEOGCS[\\\"WGS 84\\\",DATUM[\\\"WGS_1984\\\",SPHEROID[\\\"WGS 84\\\",6378137,298.257223563,AUTHORITY[\\\"EPSG\\\",\\\"7030\\\"]],AUTHORITY[\\\"EPSG\\\",\\\"6326\\\"]],PRIMEM[\\\"Greenwich\\\",0,AUTHORITY[\\\"EPSG\\\",\\\"8901\\\"]],UNIT[\\\"degree\\\",0.0174532925199433,AUTHORITY[\\\"EPSG\\\",\\\"9122\\\"]],AXIS[\\\"Latitude\\\",NORTH],AXIS[\\\"Longitude\\\",EAST],AUTHORITY[\\\"EPSG\\\",\\\"4326\\\"]]\", \"units\": \"degree\"}"
                 }
             ],
             "resources": [
@@ -193,6 +197,10 @@
                 {
                     "key": "spatial",
                     "value": "{\"type\": \"Polygon\", \"coordinates\": [[[36.744613360150325, -0.5255371965319794], [36.744613360150325, -0.6068670102422887], [37.00544990906099, -0.6068670102422887], [37.00544990906099, -0.5255371965319794], [36.744613360150325, -0.5255371965319794]]]}"
+                },
+                {
+                    "key": "projection_information",
+                    "value": "{\"wkt\": \"GEOGCS[\\\"WGS 84\\\",DATUM[\\\"WGS_1984\\\",SPHEROID[\\\"WGS 84\\\",6378137,298.257223563,AUTHORITY[\\\"EPSG\\\",\\\"7030\\\"]],AUTHORITY[\\\"EPSG\\\",\\\"6326\\\"]],PRIMEM[\\\"Greenwich\\\",0,AUTHORITY[\\\"EPSG\\\",\\\"8901\\\"]],UNIT[\\\"degree\\\",0.0174532925199433,AUTHORITY[\\\"EPSG\\\",\\\"9122\\\"]],AXIS[\\\"Latitude\\\",NORTH],AXIS[\\\"Longitude\\\",EAST],AUTHORITY[\\\"EPSG\\\",\\\"4326\\\"]]\", \"units\": \"degree\"}"
                 }
             ],
             "resources": [

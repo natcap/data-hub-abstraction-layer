@@ -131,6 +131,9 @@ def search_dataset(filter_query: Annotated[SearchParams, Query()]) -> SearchResp
             for dataset in result.get('results', []):
                 LOGGER.info(dataset['title'])
                 bbox = None
+                pixel_size = None
+                crs_wkt = None
+                crs_units = None
                 for extra in dataset.get('extras', []):
                     if extra['key'] == 'spatial':
                         spatial = extra['value']
@@ -138,7 +141,12 @@ def search_dataset(filter_query: Annotated[SearchParams, Query()]) -> SearchResp
                         coords = spatial_dict['coordinates']
                         bbox = [coords[0][0][0], coords[0][1][1],
                                 coords[0][2][0], coords[0][0][1]]
-                        break
+                    if extra['key'] == 'pixel_size':
+                        pixel_size = json.loads(extra['value'])
+                    if extra['key'] == 'projection_information':
+                        projection_dict = json.loads(extra['value'])
+                        crs_wkt = projection_dict.get('wkt')
+                        crs_units = projection_dict.get('units')
 
                 dataset_url = None
                 possible_dataset_urls_count = 0
@@ -162,6 +170,9 @@ def search_dataset(filter_query: Annotated[SearchParams, Query()]) -> SearchResp
                     name=dataset.get('title'),
                     description=dataset.get('notes'),
                     extent=bbox,
+                    pixel_size=pixel_size,
+                    crs_wkt=crs_wkt,
+                    crs_units=crs_units,
                     tags=[tag['name'] for tag in dataset['tags']
                           if not tag['vocabulary_id']],
                     places=[tag['name'] for tag in dataset['tags']
