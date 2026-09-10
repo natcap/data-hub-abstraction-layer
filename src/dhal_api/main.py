@@ -28,7 +28,9 @@ app = FastAPI(
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=['*'],
+    allow_origins=[
+        'http://localhost:5173',  # Workbench in dev mode
+    ],
     allow_methods=['GET']
 )
 
