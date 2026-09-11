@@ -7,6 +7,7 @@ from typing import Annotated
 import ckanapi.errors
 from ckanapi import RemoteCKAN
 from fastapi import FastAPI, Query, Request
+from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 
 from dhal_api import utils
@@ -23,6 +24,14 @@ app = FastAPI(
     description="API for querying the NatCap Data Hub from InVEST.",
     version="0.1.0",
     root_path=ROOT_PATH
+)
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=[
+        'http://localhost:5173',  # Workbench in dev mode
+    ],
+    allow_methods=['GET']
 )
 
 # Production:
