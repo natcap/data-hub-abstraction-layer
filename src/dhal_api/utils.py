@@ -50,3 +50,17 @@ def tag_search_string_or(tags):
     """
     tag_str = '" OR "'.join(tag for tag in tags)
     return f'tags:("{tag_str}")'
+
+
+def tag_search_string_complex(index_tags, tags):
+    """Format a search string for tags using a combination of AND and OR syntax.
+
+    Each tag must be wrapped in double quotes in case it contains whitespace.
+    """
+    # Ensure none of the `index_tags` also appear in `tags`
+    non_index_tags = [tag for tag in tags if tag not in index_tags]
+
+    index_tag_str = '("' + '" OR "'.join(tag for tag in index_tags) + '")'
+    tag_str = '("' + '" OR "'.join(tag for tag in non_index_tags) + '")'
+
+    return f'tags:({index_tag_str} AND {tag_str})'
