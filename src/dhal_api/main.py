@@ -89,7 +89,10 @@ def search_dataset(filter_query: Annotated[SearchParams, Query()]) -> SearchResp
     # For dev: need to set verify=False when working with the dev CKAN container
 #    session.verify = False
 
-    q = utils.tag_search_string_or(filter_query.tags)
+    if not filter_query.index_tags:
+        q = utils.tag_search_string_or(filter_query.tags)
+    else:
+        q = utils.tag_search_string_complex(filter_query.index_tags, filter_query.tags)
 
     # Skip collections for now:
     fq_list = ['type:dataset']

@@ -7,6 +7,7 @@ from ckanapi.errors import CKANAPIError
 from fastapi.testclient import TestClient
 
 from dhal_api.main import app
+from dhal_api.utils import tag_search_string_complex
 
 
 DATA_DIR = os.path.join(os.path.dirname(__file__), 'test_data')
@@ -183,3 +184,21 @@ class APITests(unittest.TestCase):
         self.assertEqual(resp.status_code, 500)
         data = resp.json()
         self.assertIn("error_message", data.keys())
+
+
+class UtilsTests(unittest.TestCase):
+
+    def test_complex_query_string_multiple_index_tags(self):
+        index_tags = ['LULC', 'LAND USE LAND COVER']
+        # LULC repeated in tags -- should be de-duplicated
+        tags = ['LULC', 'USLE C FACTOR', 'USLE P FACTOR']
+        expected_string = 'tags:(("LULC" OR "LAND USE LAND COVER") AND ("USLE C FACTOR" OR "USLE P FACTOR"))'
+        actual_string = tag_search_string_complex(index_tags, tags)
+        self.assertEqual(expected_string, actual_string)
+
+    def test_complex_query_string_single_index_tag(self):
+        index_tags = ['LAND USE LAND COVER']
+        tags = ['USLE C FACTOR', 'USLE P FACTOR']
+        expected_string = 'tags:(("LAND USE LAND COVER") AND ("USLE C FACTOR" OR "USLE P FACTOR"))'
+        actual_string = tag_search_string_complex(index_tags, tags)
+        self.assertEqual(expected_string, actual_string)

@@ -21,6 +21,12 @@ class SearchParams(BaseModel):
     """Class for an InVEST input search."""
     tags: list[str]
     """List of keywords from a shared vocabulary between InVEST and the Data Hub."""
+    index_tags: list[str] = []
+    """List of keywords associated with the `index_col` of an InVEST `CSVInput`.
+    Used for constructing more complex Data Hub queries, where results must match
+    the `index_col` keyword AND at least one of the keywords associated with other
+    columns.
+    """
     datatype: DataType
     """The file format. One of: raster, vector, or table."""
     extent: list[float] | None = None
